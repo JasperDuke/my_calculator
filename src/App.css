@@ -1,10 +1,12 @@
+@font-face {
+  font-family: "DigitalFont";
+  src: url("fonts/digital.ttf") format("truetype");
+}
+
 * {
   margin: 0;
   padding: 0;
-}
-
-body {
-  background-color: #c2c2d6;
+  font-family: "outfit", serif;
 }
 
 .container {
@@ -13,12 +15,19 @@ body {
   align-items: center;
   height: 100vh;
   width: 100%;
+  flex-direction: column;
+  gap: 30px;
+  background-color: #a4d7e8;
+}
+.title {
+  font-weight: bold;
+  color: #343437;
 }
 
 .calculator-wrapper {
   width: 350px;
   height: 400px;
-  background-color: #000000;
+  background-color: #343437;
   display: flex;
   flex-direction: column;
   justify-content: start;
@@ -34,6 +43,9 @@ body {
   font-size: 22px;
   font-weight: bold;
   color: #ffa500;
+  max-width: 100%;
+  overflow-x: auto;
+  text-align: right;
 }
 
 .input {
@@ -84,4 +96,45 @@ button:last-child:active {
 .clear {
   background-color: rgb(185, 9, 9);
   color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb {
+  /* background: #888; */
+  background: gray;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: transparent;
+}
+
+.scroll-box {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-radius: 10px 0 0 0;
+  cursor: pointer;
+  z-index: 999;
+  background-image: linear-gradient(90deg, #426781, #599eb4, #84b4c1);
+  background-size: 200% auto;
+}
+
+.name {
+  color: white;
+  font-weight: 600;
 }

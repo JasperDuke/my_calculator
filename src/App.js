@@ -1,55 +1,76 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
-
+import { evaluate } from "mathjs";
 function App() {
   const [result, setResult] = useState("");
+  const [expression, setExpression] = useState("");
   const [input, setInput] = useState("");
-  const [prevInput, setPrevInput] = useState("");
-  const [operator, setOperator] = useState(null);
-  const operators = ["+", "-", "*", "/"];
+  const resultRef = useRef("");
+
+  useEffect(() => {
+    if (resultRef.current) {
+      resultRef.current.scrollLeft = resultRef.current.scrollWidth;
+    }
+  });
+
+  const handleEvaluate = () => {
+    try {
+      const res = evaluate(expression);
+      setResult(() => expression + "=" + res);
+      setInput(res);
+    } catch (error) {
+      setResult("Error evaluating expression");
+    }
+  };
 
   const handleClick = (value) => {
-    setResult((prev) => prev + value);
-    if (!isNaN(value)) {
-      setInput((prev) => prev + value);
-    } else if (operators.includes(value)) {
-      if (input === "") {
+    switch (value) {
+      case "=":
+        if (expression) handleEvaluate();
+        break;
+      case "AC":
+        clearAll();
+        break;
+      default:
+        handleInput(value);
+        break;
+    }
+  };
+
+  const handleInput = (value) => {
+    if (isNaN(value)) {
+      if (expression === "") return;
+      if (expression.length > 0 && result.includes("=")) {
+        setExpression(result.slice(result.indexOf("=") + 1) + value);
+        setResult(result.slice(result.indexOf("=") + 1) + value);
+        setInput(value);
         return;
       }
-      setPrevInput(input);
-      setOperator(value);
-      setInput("");
-    } else if (value === "=") {
-      if (input !== "") {
-        try {
-          const calcResult = String(eval(prevInput + operator + input));
-          setInput(calcResult);
-          setResult((prev) => prev + calcResult);
-        } catch (error) {
-          setInput("Error");
-        }
-      }
-    } else if (value === "AC") {
-      setInput("");
-      setPrevInput("");
-      setOperator(null);
     }
+    if (!isNaN(value) && !isNaN(expression[expression.length - 1])) {
+      setInput((prev) => prev + value);
+    } else setInput(value);
+
+    setExpression((prev) => prev + value);
+    setResult((prev) => prev + value);
   };
 
   const clearAll = () => {
     setResult("");
-    setPrevInput("");
     setInput("");
-    setOperator(null);
+    setExpression("");
   };
 
   return (
     <div className="container">
+      <h1 className="title">Simple Calculator</h1>
       <div className="calculator-wrapper">
-        <p className="result">{result}</p>
-        <p className="input">{input}</p>
+        <p className="result" ref={resultRef}>
+          {result}
+        </p>
+        <p className="input">{input || 0}</p>
         <div className="calculator">
-          <button className="span-two clear" onClick={clearAll}>
+          <button className="span-two clear" onClick={() => handleClick("AC")}>
             AC
           </button>
           <button onClick={() => handleClick("/")}>/</button>
@@ -73,6 +94,9 @@ function App() {
           </button>
           <button onClick={() => handleClick(".")}>.</button>
         </div>
+      </div>
+      <div className="scroll-box">
+        <span className="name">Jasper Duke</span>
       </div>
     </div>
   );
